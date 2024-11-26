@@ -1,0 +1,17 @@
+apiVersion: v2
+name: example-hermes
+description: Example integrating hermes with a server mock.
+type: application
+version: 0.0.1
+appVersion: "0.0.1"
+
+dependencies:
+  - name: hermes
+    version: 0.0.3
+    repository: https://jgomezselles.github.io/hermes-charts
+#  - name: grafana
+#    version: 6.58.8
+#    repository: https://grafana.github.io/helm-charts
+#  - name: tempo
+#    version: 1.7.0
+#    repository: https://grafana.github.io/helm-charts
