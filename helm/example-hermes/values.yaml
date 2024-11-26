@@ -71,9 +71,13 @@ opentelemetry-collector:
         tls:
            insecure: true
       otlp/jaeger:
-        endpoint: http://jaeger-svc-collector:4318
+        endpoint: jaeger-svc-collector:4317
         tls:
            insecure: true
+
+    connectors:
+      spanmetrics:
+
     service:
       pipelines:
         metrics:
@@ -83,7 +87,10 @@ opentelemetry-collector:
         traces:
           receivers: [otlp]
           processors: []
-          exporters: [otlp/jaeger]
+          exporters: [spanmetrics, otlp/jaeger]
+        metrics/spanmetrics:
+          receivers: [spanmetrics]
+          exporters: [otlphttp/victoriametrics]
 
 #grafana:
 #  adminPassword: admin
