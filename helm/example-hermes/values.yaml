@@ -29,6 +29,21 @@ victoria-metrics-single:
     persistentVolume:
       enabled: false
 
+jaeger:
+  fullnameOverride: "jaeger-svc"
+  provisionDataStore:
+    cassandra: false
+  allInOne:
+    enabled: true
+  storage:
+    type: memory
+  agent:
+    enabled: false
+  collector:
+    enabled: false
+  query:
+    enabled: false
+
 opentelemetry-collector:
   fullnameOverride: "otelcol"
   mode: deployment
@@ -55,6 +70,10 @@ opentelemetry-collector:
         endpoint: http://victoria-svc:8428/opentelemetry
         tls:
            insecure: true
+      otlp/jaeger:
+        endpoint: http://jaeger-svc-collector:4318
+        tls:
+           insecure: true
     service:
       pipelines:
         metrics:
@@ -64,7 +83,7 @@ opentelemetry-collector:
         traces:
           receivers: [otlp]
           processors: []
-          exporters: [debug]
+          exporters: [otlp/jaeger]
 
 #grafana:
 #  adminPassword: admin
