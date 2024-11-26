@@ -23,6 +23,12 @@ hermes:
     traces_endpoint: http://otelcol:4318/v1/traces
     #http://hermes-tempo:4318/v1/traces
 
+victoria-metrics-single:
+  server:
+    fullnameOverride: "victoria-svc"
+    persistentVolume:
+      enabled: false
+
 opentelemetry-collector:
   fullnameOverride: "otelcol"
   mode: deployment
@@ -46,7 +52,7 @@ opentelemetry-collector:
         encoding: proto
         # Setting below will work for sending data to VictoriaMetrics single-node version.
         # Cluster version of VictoriaMetrics will require a different URL - https://docs.victoriametrics.com/cluster-victoriametrics/#url-format
-        endpoint: http://victoria-metrics-victoria-metrics-single-server.default.svc.cluster.local:8428/opentelemetry
+        endpoint: http://victoria-svc:8428/opentelemetry
         tls:
            insecure: true
     service:
@@ -54,7 +60,7 @@ opentelemetry-collector:
         metrics:
           receivers: [otlp]
           processors: []
-          exporters: [debug] #[otlphttp/victoriametrics]
+          exporters: [otlphttp/victoriametrics]
         traces:
           receivers: [otlp]
           processors: []
