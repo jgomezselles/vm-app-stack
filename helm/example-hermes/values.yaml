@@ -18,10 +18,47 @@ hermes:
     tag: 0.0.4
     pullPolicy: IfNotPresent
   o11y:
-    metrics_endpoint: http://dev-collector:4318/v1/metrics
+    metrics_endpoint: http://otelcol:4318/v1/metrics
     #http://victoria-svc:8428/opentelemetry/api/v1/push
-    traces_endpoint: http://dev-collector:4318/v1/traces
+    traces_endpoint: http://otelcol:4318/v1/traces
     #http://hermes-tempo:4318/v1/traces
+
+opentelemetry-collector:
+  fullnameOverride: "otelcol"
+  mode: deployment
+  image:
+    repository: "otel/opentelemetry-collector-contrib"
+  presets:
+    clusterMetrics:
+      enabled: true
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    exporters:
+      debug: {}
+      otlphttp/victoriametrics:
+        compression: gzip
+        encoding: proto
+        # Setting below will work for sending data to VictoriaMetrics single-node version.
+        # Cluster version of VictoriaMetrics will require a different URL - https://docs.victoriametrics.com/cluster-victoriametrics/#url-format
+        endpoint: http://victoria-metrics-victoria-metrics-single-server.default.svc.cluster.local:8428/opentelemetry
+        tls:
+           insecure: true
+    service:
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: []
+          exporters: [debug] #[otlphttp/victoriametrics]
+        traces:
+          receivers: [otlp]
+          processors: []
+          exporters: [debug]
 
 #grafana:
 #  adminPassword: admin
