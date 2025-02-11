@@ -15,15 +15,15 @@ dependencies:
     repository: https://open-telemetry.github.io/opentelemetry-helm-charts
 
   - name: victoria-metrics-single
-    version: 0.12.7
+    version: 0.13.8
     repository: https://victoriametrics.github.io/helm-charts
 
   - name: jaeger
     version: 3.3.2
     repository: https://jaegertracing.github.io/helm-charts
-#  - name: grafana
-#    version: 6.58.8
-#    repository: https://grafana.github.io/helm-charts
+  - name: grafana
+    version: 6.58.8
+    repository: https://grafana.github.io/helm-charts
 #  - name: tempo
 #    version: 1.7.0
 #    repository: https://grafana.github.io/helm-charts
