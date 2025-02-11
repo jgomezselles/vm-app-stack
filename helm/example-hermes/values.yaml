@@ -67,6 +67,7 @@ opentelemetry-collector:
         encoding: proto
         # Setting below will work for sending data to VictoriaMetrics single-node version.
         # Cluster version of VictoriaMetrics will require a different URL - https://docs.victoriametrics.com/cluster-victoriametrics/#url-format
+        # http://victoria-svc:8428/opentelemetry
         endpoint: http://victoria-svc:8428/opentelemetry
         tls:
            insecure: true
@@ -91,39 +92,38 @@ opentelemetry-collector:
         metrics/spanmetrics:
           receivers: [spanmetrics]
           exporters: [otlphttp/victoriametrics]
+grafana:
+  adminPassword: admin
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://victoria-svc:8428
+        access: proxy
+        isDefault: true
+        uid: hermes-prometheus-datasource
+  #    - name: Tempo
+  #      uid: tempo
+  #      type: tempo
+  #      url: http://hermes-tempo:3100
+  #      isDefault: false
+      deleteDatasources:
+      - name: Prometheus
 
-#grafana:
-#  adminPassword: admin
-#  datasources:
-#    datasources.yaml:
-#      apiVersion: 1
-#      datasources:
-#      - name: Prometheus
-#        type: prometheus
-#        url: http://victoria-svc:8428
-#        access: proxy
-#        isDefault: true
-#        uid: hermes-prometheus-datasource
-#      - name: Tempo
-#        uid: tempo
-#        type: tempo
-#        url: http://hermes-tempo:3100
-#        isDefault: false
-#      deleteDatasources:
-#      - name: Prometheus
-#
-#  dashboardProviders:
-#   dashboardproviders.yaml:
-#     apiVersion: 1
-#     providers:
-#     - name: 'default'
-#       orgId: 1
-#       folder: ''
-#       type: file
-#       disableDeletion: false
-#       editable: true
-#       options:
-#         path: /var/lib/grafana/dashboards/default
-#
-#  dashboardsConfigMaps:
-#    default: "hermes-dashboard"
+  dashboardProviders:
+   dashboardproviders.yaml:
+     apiVersion: 1
+     providers:
+     - name: 'default'
+       orgId: 1
+       folder: ''
+       type: file
+       disableDeletion: false
+       editable: true
+       options:
+         path: /var/lib/grafana/dashboards/default
+
+  dashboardsConfigMaps:
+    default: "hermes-dashboard"
