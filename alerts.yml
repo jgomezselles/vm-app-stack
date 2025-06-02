@@ -1,0 +1,13 @@
+groups:
+  - name: server-mock-availability
+    rules:
+    - alert: ServerMockUnavailable
+      expr: absent(k8s.deployment.available{k8s.deployment.name="server-mock"} == 1)
+      for: 10s
+      labels:
+        severity: critical
+      annotations:
+        summary: "Deployment 'server-mock' is not available"
+        description: "The deployment 'server-mock' has zero or no available replicas."
+
+

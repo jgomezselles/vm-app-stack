@@ -53,6 +53,13 @@ opentelemetry-collector:
     clusterMetrics:
       enabled: true
   config:
+    extensions:
+      bearertokenauth:
+        scheme: "Bearer"
+        token:  #My VM cloud token
+      health_check:
+        endpoint: ${env:MY_POD_IP}:13133
+
     receivers:
       otlp:
         protocols:
@@ -71,6 +78,12 @@ opentelemetry-collector:
         endpoint: http://victoria-svc:8428/opentelemetry
         tls:
            insecure: true
+      otlphttp/cloud:
+        compression: gzip
+        encoding: proto
+        endpoint: https://gw-c15-1b.cloud.victoriametrics.com/opentelemetry #VMcloud endpoint <url>/opentelemetry
+        auth:
+          authenticator: bearertokenauth
       otlp/jaeger:
         endpoint: jaeger-svc-collector:4317
         tls:
@@ -80,11 +93,12 @@ opentelemetry-collector:
       spanmetrics:
 
     service:
+      extensions: [bearertokenauth, health_check]
       pipelines:
         metrics:
           receivers: [otlp]
           processors: []
-          exporters: [otlphttp/victoriametrics]
+          exporters: [otlphttp/victoriametrics, otlphttp/cloud ]
         traces:
           receivers: [otlp]
           processors: []
@@ -92,6 +106,8 @@ opentelemetry-collector:
         metrics/spanmetrics:
           receivers: [spanmetrics]
           exporters: [otlphttp/victoriametrics]
+
+
 grafana:
   adminPassword: admin
   datasources:
