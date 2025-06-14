@@ -1,0 +1,66 @@
+
+jaeger:
+  enabled: false
+
+opentelemetry-collector:
+  fullnameOverride: "otelcol"
+  mode: deployment
+  image:
+    repository: "otel/opentelemetry-collector-contrib"
+  presets:
+    clusterMetrics:
+      enabled: true
+
+  config:
+    extensions:
+      bearertokenauth/k8smetrics:
+        scheme: "Bearer"
+        token: <token1>
+      bearertokenauth/spanmetrics:
+        scheme: "Bearer"
+        token: <token2>
+
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    exporters:
+      debug: {}
+      otlphttp/cloud-k8smetrics:
+        compression: gzip
+        encoding: proto
+        endpoint: https://<URL1>/opentelemetry
+        auth:
+          authenticator: bearertokenauth/k8smetrics
+
+      otlphttp/cloud-spanmetrics:
+        compression: gzip
+        encoding: proto
+        endpoint: https://<URL>/opentelemetry
+        auth:
+          authenticator: bearertokenauth/spanmetrics
+
+    connectors:
+      spanmetrics:
+
+    service:
+      extensions:
+          - bearertokenauth/k8smetrics
+          - bearertokenauth/spanmetrics
+          - health_check
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: []
+          exporters: [otlphttp/cloud-k8smetrics]
+        traces:
+          receivers: [otlp]
+          processors: []
+          exporters: [spanmetrics, debug]
+        metrics/spanmetrics:
+          receivers: [spanmetrics]
+          exporters: [otlphttp/cloud-spanmetrics]
+
