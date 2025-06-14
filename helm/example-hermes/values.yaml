@@ -30,6 +30,7 @@ victoria-metrics-single:
       enabled: false
 
 jaeger:
+  enabled: true
   fullnameOverride: "jaeger-svc"
   provisionDataStore:
     cassandra: false
@@ -120,11 +121,6 @@ grafana:
         access: proxy
         isDefault: true
         uid: hermes-prometheus-datasource
-  #    - name: Tempo
-  #      uid: tempo
-  #      type: tempo
-  #      url: http://hermes-tempo:3100
-  #      isDefault: false
       deleteDatasources:
       - name: Prometheus
 
