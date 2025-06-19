@@ -21,7 +21,6 @@ hermes:
     metrics_endpoint: http://otelcol:4318/v1/metrics
     #http://victoria-svc:8428/opentelemetry/api/v1/push
     traces_endpoint: http://otelcol:4318/v1/traces
-    #http://hermes-tempo:4318/v1/traces
 
 victoria-metrics-single:
   server:
@@ -55,9 +54,6 @@ opentelemetry-collector:
       enabled: true
   config:
     extensions:
-      bearertokenauth:
-        scheme: "Bearer"
-        token:  #My VM cloud token
       health_check:
         endpoint: ${env:MY_POD_IP}:13133
 
@@ -79,19 +75,14 @@ opentelemetry-collector:
         endpoint: http://victoria-svc:8428/opentelemetry
         tls:
            insecure: true
-      otlphttp/cloud:
-        compression: gzip
-        encoding: proto
-        endpoint: https://gw-c15-1b.cloud.victoriametrics.com/opentelemetry #VMcloud endpoint <url>/opentelemetry
-        auth:
-          authenticator: bearertokenauth
+
       otlp/jaeger:
         endpoint: jaeger-svc-collector:4317
         tls:
            insecure: true
 
     connectors:
-      spanmetrics:
+      spanmetrics: {}
 
     service:
       extensions: [bearertokenauth, health_check]
@@ -99,7 +90,7 @@ opentelemetry-collector:
         metrics:
           receivers: [otlp]
           processors: []
-          exporters: [otlphttp/victoriametrics, otlphttp/cloud ]
+          exporters: [otlphttp/victoriametrics]
         traces:
           receivers: [otlp]
           processors: []
@@ -107,7 +98,6 @@ opentelemetry-collector:
         metrics/spanmetrics:
           receivers: [spanmetrics]
           exporters: [otlphttp/victoriametrics]
-
 
 grafana:
   adminPassword: admin
