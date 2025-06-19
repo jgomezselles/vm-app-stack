@@ -85,7 +85,7 @@ opentelemetry-collector:
       spanmetrics: {}
 
     service:
-      extensions: [bearertokenauth, health_check]
+      extensions: [health_check]
       pipelines:
         metrics:
           receivers: [otlp]
@@ -101,6 +101,8 @@ opentelemetry-collector:
 
 grafana:
   adminPassword: admin
+  plugins:
+    - victoriametrics-metrics-datasource
   datasources:
     datasources.yaml:
       apiVersion: 1
@@ -109,8 +111,23 @@ grafana:
         type: prometheus
         url: http://victoria-svc:8428
         access: proxy
-        isDefault: true
+        isDefault: false
         uid: hermes-prometheus-datasource
+      # <string, required> Name of the VictoriaMetrics datasource
+      # displayed in Grafana panels and queries.
+      - name: VictoriaMetrics
+        # <string, required> Sets the data source type.
+        type: victoriametrics-metrics-datasource
+          # <string, required> Sets the access mode, either
+          # proxy or direct (Server or Browser in the UI).
+          # Some data sources are incompatible with any setting
+        # but proxy (Server).
+        access: proxy
+        # <string> Sets default URL of the single node version of VictoriaMetrics
+        url: http://victoria-svc:8428
+        # <string> Sets the pre-selected datasource for new panels.
+        # You can set only one default data source per organization.
+        isDefault: true
       deleteDatasources:
       - name: Prometheus
 
