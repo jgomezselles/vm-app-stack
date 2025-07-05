@@ -3,7 +3,7 @@
 opentelemetry-collector:
   fullnameOverride: "otelcol-cloud"
 
-  config:
+  alternateConfig:
     extensions:
       bearertokenauth:
         scheme: "Bearer"

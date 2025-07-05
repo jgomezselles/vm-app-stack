@@ -3,7 +3,7 @@
 opentelemetry-collector:
   fullnameOverride: "otelcol-multitenant"
 
-  config:
+  alternateConfig:
     extensions:
       bearertokenauth/k8smetrics:
         scheme: "Bearer"

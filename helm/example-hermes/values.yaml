@@ -19,14 +19,28 @@ hermes:
     pullPolicy: IfNotPresent
   o11y:
     metrics_endpoint: http://otelcol:4318/v1/metrics
-    #http://victoria-svc:8428/opentelemetry/api/v1/push
+    #http://vm-svc:8428/opentelemetry/api/v1/push
     traces_endpoint: http://otelcol:4318/v1/traces
 
 victoria-metrics-single:
   server:
-    fullnameOverride: "victoria-svc"
+    fullnameOverride: "vm-svc"
     persistentVolume:
       enabled: false
+
+victoria-logs-single:
+  server:
+    fullnameOverride: "vl-svc"
+    persistentVolume:
+      enabled: false
+    deployment:
+      spec:
+        strategy:
+          type: RollingUpdate
+    emptyDir:
+      medium: Memory
+      sizeLimit: 500Mi
+
 
 jaeger:
   enabled: true
@@ -52,7 +66,14 @@ opentelemetry-collector:
   presets:
     clusterMetrics:
       enabled: true
-  config:
+    kubernetesEvents:
+      enabled: true
+    logsCollection:
+      enabled: true
+    kubernetesAttributes:
+      enabled: true
+
+  alternateConfig:
     extensions:
       health_check:
         endpoint: ${env:MY_POD_IP}:13133
@@ -65,17 +86,20 @@ opentelemetry-collector:
           http:
             endpoint: 0.0.0.0:4318
     exporters:
-      debug: {}
       otlphttp/victoriametrics:
         compression: gzip
         encoding: proto
         # Setting below will work for sending data to VictoriaMetrics single-node version.
         # Cluster version of VictoriaMetrics will require a different URL - https://docs.victoriametrics.com/cluster-victoriametrics/#url-format
-        # http://victoria-svc:8428/opentelemetry
-        endpoint: http://victoria-svc:8428/opentelemetry
+        # http://vm-svc:8428/opentelemetry
+        endpoint: http://vm-svc:8428/opentelemetry
         tls:
            insecure: true
-
+      otlphttp/victorialogs:
+        logs_endpoint: http://vl-svc:9428/insert/opentelemetry/v1/logs
+        headers:
+          VL-Msg-Field: object.note
+          VL-Stream-Fields: object.regarding.fieldPath,k8s.container.name
       otlp/jaeger:
         endpoint: jaeger-svc-collector:4317
         tls:
@@ -98,6 +122,10 @@ opentelemetry-collector:
         metrics/spanmetrics:
           receivers: [spanmetrics]
           exporters: [otlphttp/victoriametrics]
+        logs:
+          receivers: [otlp]
+          processors: []
+          exporters: [otlphttp/victorialogs]
 
 grafana:
   adminPassword: admin
@@ -109,7 +137,7 @@ grafana:
       datasources:
       - name: Prometheus
         type: prometheus
-        url: http://victoria-svc:8428
+        url: http://vm-svc:8428
         access: proxy
         isDefault: false
         uid: hermes-prometheus-datasource
@@ -124,7 +152,7 @@ grafana:
         # but proxy (Server).
         access: proxy
         # <string> Sets default URL of the single node version of VictoriaMetrics
-        url: http://victoria-svc:8428
+        url: http://vm-svc:8428
         # <string> Sets the pre-selected datasource for new panels.
         # You can set only one default data source per organization.
         isDefault: true
