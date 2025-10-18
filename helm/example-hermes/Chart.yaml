@@ -15,11 +15,15 @@ dependencies:
     repository: https://open-telemetry.github.io/opentelemetry-helm-charts
 
   - name: victoria-metrics-single
-    version: 0.22.0
+    version: 0.25.1
     repository: https://victoriametrics.github.io/helm-charts
 
   - name: victoria-logs-single
-    version: 0.11.3
+    version: 0.11.15
+    repository: https://victoriametrics.github.io/helm-charts
+
+  - name: victoria-traces-single
+    version: 0.0.2
     repository: https://victoriametrics.github.io/helm-charts
 
   - name: jaeger
