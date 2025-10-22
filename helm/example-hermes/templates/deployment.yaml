@@ -28,4 +28,5 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.serverMock.resources | nindent 12 }}
-
+          env:
+            {{- toYaml .Values.serverMock.env | nindent 12 }}

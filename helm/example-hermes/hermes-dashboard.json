@@ -515,7 +515,7 @@
             "uid": "P14D5514F5CCC0D1C"
           },
           "limit": 1000,
-          "minDuration": "10ms",
+          "minDuration": "",
           "operation": "get1",
           "queryType": "search",
           "refId": "A",
@@ -620,7 +620,7 @@
             "uid": "P14D5514F5CCC0D1C"
           },
           "limit": 1000,
-          "minDuration": "10ms",
+          "minDuration": "",
           "operation": "get1",
           "queryType": "search",
           "refId": "A",
