@@ -20,7 +20,7 @@ hermes:
     cm: traffic-script-cm
   image:
     repository: ghcr.io/jgomezselles/hermes
-    tag: 0.0.5
+    tag: 0.0.6
     pullPolicy: IfNotPresent
   o11y:
     metrics_endpoint: http://otelcol:4318/v1/metrics
