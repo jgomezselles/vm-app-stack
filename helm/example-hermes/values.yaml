@@ -34,6 +34,8 @@ victoria-metrics-single:
       enabled: false
     scrape:
       enabled: true
+    extraArgs:
+      opentelemetry.usePrometheusNaming: false
 
 victoria-logs-single:
   server:
@@ -60,6 +62,8 @@ victoria-traces-single:
     emptyDir:
       medium: Memory
       sizeLimit: 500Mi
+    extraArgs:
+      servicegraph.enableTask: true
 
 jaeger:
   enabled: true
