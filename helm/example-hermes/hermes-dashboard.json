@@ -739,8 +739,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 10,
+        "h": 10,
+        "w": 8,
         "x": 0,
         "y": 27
       },
@@ -804,9 +804,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 10,
         "w": 10,
-        "x": 10,
+        "x": 8,
         "y": 27
       },
       "id": 10,
@@ -840,6 +840,47 @@
       "title": "GET > 10ms",
       "transparent": true,
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "jaeger",
+        "uid": "P14D5514F5CCC0D1C"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 6,
+        "x": 0,
+        "y": 37
+      },
+      "id": 20,
+      "options": {
+        "edges": {},
+        "layoutAlgorithm": "layered",
+        "nodes": {},
+        "zoomMode": "cooperative"
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "jaeger",
+            "uid": "P14D5514F5CCC0D1C"
+          },
+          "limit": 1000,
+          "minDuration": "",
+          "operation": "get1",
+          "queryType": "dependencyGraph",
+          "refId": "A",
+          "service": "hermes"
+        }
+      ],
+      "title": "Service Graph",
+      "transparent": true,
+      "type": "nodeGraph"
     },
     {
       "datasource": {
@@ -904,10 +945,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
-        "w": 20,
-        "x": 0,
-        "y": 35
+        "h": 13,
+        "w": 14,
+        "x": 8,
+        "y": 37
       },
       "id": 11,
       "options": {
